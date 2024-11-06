@@ -25,7 +25,13 @@ async def connect_to_wss(socks5_proxy, user_id):
     try:
         await asyncio.sleep(random.uniform(0.1, 1.0))
         custom_headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0",
+            "Pragma": "no-cache",
+            "Accept-Language": "uk-UA,uk;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Cache-Control": "no-cache",
+            "OS": "Windows",
+            "Platform": "Desktop",
+            "Browser": "Mozilla",
         }
         ssl_context = ssl.create_default_context()
         ssl_context.check_hostname = False
@@ -33,10 +39,9 @@ async def connect_to_wss(socks5_proxy, user_id):
         uri = "wss://proxy.wynd.network:4444/"
         server_hostname = "proxy.wynd.network"
         proxy = Proxy.from_url(socks5_proxy)
-        async with proxy_connect(uri, proxy=proxy, ssl=ssl_context, extra_headers={
-            "Origin": "chrome-extension://lkbnfiajjmbhnfledhphioinpickokdi",
-            "User-Agent": custom_headers["User-Agent"]
-        }) as websocket:
+        async with proxy_connect(
+            uri, proxy=proxy, ssl=ssl_context, extra_headers=custom_headers
+        ) as websocket:
 
             async def send_ping():
                 while True:
@@ -60,11 +65,10 @@ async def connect_to_wss(socks5_proxy, user_id):
                             "result": {
                                 "browser_id": device_id,
                                 "user_id": user_id,
-                                "user_agent": custom_headers['User-Agent'],
+                                "user_agent": custom_headers["User-Agent"],
                                 "timestamp": int(time.time()),
-                                "device_type": "extension",
-                                "version": "4.20.2",
-                                "extension_id": "lkbnfiajjmbhnfledhphioinpickokdi"
+                                "device_type": "desktop",
+                                "version": "4.28.1",
                             }
                         }
                         logger.debug(auth_response)
